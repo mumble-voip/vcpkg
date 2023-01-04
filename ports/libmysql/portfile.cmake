@@ -16,6 +16,7 @@ vcpkg_from_github(
         004-added-limits-include.patch
         openssl.patch
         Add-target-include-directories.patch
+		cross_compile.patch
 )
 
 file(REMOVE_RECURSE "${SOURCE_PATH}/include/boost_1_70_0")

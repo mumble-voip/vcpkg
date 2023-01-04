@@ -1,0 +1,49 @@
+diff --git a/cmake/os/Darwin.cmake b/cmake/os/Darwin.cmake
+index 746950bf..59f76d68 100644
+--- a/cmake/os/Darwin.cmake
++++ b/cmake/os/Darwin.cmake
+@@ -24,22 +24,6 @@
+ 
+ INCLUDE(CheckCSourceRuns)
+ 
+-# We require at least XCode 9.0
+-IF(NOT FORCE_UNSUPPORTED_COMPILER)
+-  IF(MY_COMPILER_IS_CLANG)
+-    CHECK_C_SOURCE_RUNS("
+-      int main()
+-      {
+-        return (__clang_major__ < 9);
+-      }" HAVE_SUPPORTED_CLANG_VERSION)
+-    IF(NOT HAVE_SUPPORTED_CLANG_VERSION)
+-      MESSAGE(FATAL_ERROR "XCode 9.0 or newer is required!")
+-    ENDIF()
+-  ELSE()
+-    MESSAGE(FATAL_ERROR "Unsupported compiler!")
+-  ENDIF()
+-ENDIF()
+-
+ # This is used for the version_compile_machine variable.
+ IF(CMAKE_SIZEOF_VOID_P MATCHES 8)
+   SET(MYSQL_MACHINE_TYPE "x86_64")
+diff --git a/configure.cmake b/configure.cmake
+index 6a5f0206..d2807b98 100644
+--- a/configure.cmake
++++ b/configure.cmake
+@@ -406,7 +406,7 @@ MY_CHECK_CXX_COMPILER_FLAG("-fvisibility=hidden" HAVE_VISIBILITY_HIDDEN)
+ # Code tests
+ #
+ 
+-CHECK_C_SOURCE_RUNS("
++CHECK_C_SOURCE_COMPILES("
+ #include <time.h>
+ int main()
+ {
+@@ -414,7 +414,7 @@ int main()
+   return clock_gettime(CLOCK_MONOTONIC, &ts);
+ }" HAVE_CLOCK_GETTIME)
+ 
+-CHECK_C_SOURCE_RUNS("
++CHECK_C_SOURCE_COMPILES("
+ #include <time.h>
+ int main()
+ {

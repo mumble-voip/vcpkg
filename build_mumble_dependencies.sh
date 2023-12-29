@@ -15,18 +15,12 @@ SCRIPT_DIR="$( dirname "$0" )"
 TRIPLET=""
 AUTO=false
 
-LONGOPTIONS="--triplet:,--auto"
-OPTIONS="+t:"
-PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTIONS --name "$(basename "$0")" -- "$@")
-# Import the parsed variables in a way that preserves quoting
-eval set -- "$PARSED"
-
-while true; do
+while [[ -n "${1-}" ]]; do
 	case "$1" in
 		-t|--triplet)    shift; TRIPLET="$1" ;;
 		--auto)          AUTO=true ;;
-	    --)              shift; break ;;
-		*)               error_msg "Invalid option '$1'" ;;
+		--)              shift; break ;;
+		*)               error_msg "Invalid argument '$1'" ;;
 	esac
 	shift
 done
@@ -40,7 +34,12 @@ if [[ "$AUTO" = "false" ]]; then
 fi
 
 
-readarray -t MUMBLE_DEPS < "$SCRIPT_DIR/mumble_dependencies.txt"
+# Note: We can't use readarray as that doesn't work on macOS
+# Taken from https://unix.stackexchange.com/a/628576
+DEPS_CONTENT="$(cat "$SCRIPT_DIR/mumble_dependencies.txt" )"
+set -o noglob
+IFS=$'\n' MUMBLE_DEPS=($DEPS_CONTENT)
+set +o noglob
 
 if [[ -z "$TRIPLET" ]]; then
 	# Determine vcpkg triplet from OS

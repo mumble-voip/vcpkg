@@ -26,4 +26,8 @@ if ("$TRIPLET" -ne "$XCOMPILE_TRIPLET") {
 foreach ($dep in $MUMBLE_DEPS) {
 	Write-Host "Building dependency $dep"
 	& "$PSScriptRoot/vcpkg.exe" install --triplet "$TRIPLET" "$dep" --clean-after-build --recurse
+	# In case the dependency is already installed, but not up-to-date
+	# Unfortunately there is no clean-after-build for this one
+	$dep = $dep -replace '\[.*\]'
+	& "$PSScriptRoot/vcpkg.exe" upgrade --triplet "$TRIPLET" "$dep" --no-dry-run
 }

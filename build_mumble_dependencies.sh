@@ -83,5 +83,8 @@ else
     for dep in "${MUMBLE_DEPS[@]}"; do
 		echo "Building dependency '$dep'..."
 		"$SCRIPT_DIR/vcpkg" install --triplet "$TRIPLET" "$dep" --clean-after-build --recurse
+		# In case the dependency is already installed, but not up-to-date
+		# Unfortunately there is no clean-after-build for this one
+		"$SCRIPT_DIR/vcpkg" upgrade --triplet "$TRIPLET" "$( echo "$dep" | sed 's/\[.*\]//g' )" --no-dry-run
     done
 fi

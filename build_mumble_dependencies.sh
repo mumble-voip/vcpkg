@@ -58,12 +58,11 @@ if [[ -z "$TRIPLET" ]]; then
 	esac
 fi
 
-if [[ ! -x "$SCRIPT_DIR/vcpkg" ]]; then
-	case "$OSTYPE" in
-	    msys*) "$SCRIPT_DIR/bootstrap-vcpkg.bat" -disableMetrics ;;
-	    *)      bash "$SCRIPT_DIR/bootstrap-vcpkg.sh" -disableMetrics ;;
-	esac
-fi
+# Always bootstrap vcpkg to ensure we have the latest
+case "$OSTYPE" in
+	msys*) "$SCRIPT_DIR/bootstrap-vcpkg.bat" -disableMetrics ;;
+	*)      bash "$SCRIPT_DIR/bootstrap-vcpkg.sh" -disableMetrics ;;
+esac
 
 echo "Building for triplet $TRIPLET"
 

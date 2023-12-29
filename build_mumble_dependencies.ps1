@@ -14,9 +14,8 @@ $MUMBLE_DEPS = Get-Content -Path "$PSScriptRoot\mumble_dependencies.txt"
 $MUMBLE_DEPS += "mdnsresponder"
 $MUMBLE_DEPS += "icu"
 
-if (-Not [System.IO.File]::Exists("$PSScriptRoot\vcpkg.exe")) {
-	Start-Process -FilePath "$PSScriptRoot\bootstrap-vcpkg.bat" -ArgumentList @( "-disableMetrics" )
-}
+# Always bootstrap vcpkg to ensure we got the latest one
+Start-Process -FilePath "$PSScriptRoot\bootstrap-vcpkg.bat" -ArgumentList @( "-disableMetrics" )
 
 if ("$TRIPLET" -ne "$XCOMPILE_TRIPLET") {
 	Write-Host "Building xcompile dependencies..."

@@ -20,10 +20,10 @@ if (-Not [System.IO.File]::Exists("$PSScriptRoot\vcpkg.exe")) {
 
 if ("$TRIPLET" -ne "$XCOMPILE_TRIPLET") {
 	Write-Host "Building xcompile dependencies..."
-	& "$PSScriptRoot/vcpkg.exe" install --triplet "$XCOMPILE_TRIPLET" boost-optional --clean-after-build
+	& "$PSScriptRoot/vcpkg.exe" install --triplet "$XCOMPILE_TRIPLET" boost-optional --clean-after-build --recurse
 }
 
 foreach ($dep in $MUMBLE_DEPS) {
 	Write-Host "Building dependency $dep"
-	& "$PSScriptRoot/vcpkg.exe" install --triplet "$TRIPLET" "$dep" --clean-after-build
+	& "$PSScriptRoot/vcpkg.exe" install --triplet "$TRIPLET" "$dep" --clean-after-build --recurse
 }

@@ -2,7 +2,8 @@ qt5-base[mysqlplugin,postgresqlplugin]
 qt5-svg
 qt5-tools
 qt5-translations
-boost-accumulators
+boost
+opus
 poco
 libvorbis
 libogg

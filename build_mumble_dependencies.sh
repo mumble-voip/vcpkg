@@ -77,11 +77,11 @@ else
 		MUMBLE_DEPS+=("icu")
 
 		echo "Building xcompile dependencies..."
-	    "$SCRIPT_DIR/vcpkg" install --triplet "$XCOMPILE_TRIPLET" boost-optional --clean-after-build
+	    "$SCRIPT_DIR/vcpkg" install --triplet "$XCOMPILE_TRIPLET" boost-optional --clean-after-build --recurse
     fi
 
     for dep in "${MUMBLE_DEPS[@]}"; do
 		echo "Building dependency '$dep'..."
-		"$SCRIPT_DIR/vcpkg" install --triplet "$TRIPLET" "$dep" --clean-after-build
+		"$SCRIPT_DIR/vcpkg" install --triplet "$TRIPLET" "$dep" --clean-after-build --recurse
     done
 fi

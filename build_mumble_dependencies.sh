@@ -1,37 +1,5 @@
 #!/bin/bash
 
-# Copyright 2020-2023 The Mumble Developers. All rights reserved.
-# Use of this source code is governed by a BSD-style license
-# that can be found in the LICENSE file at the root of the
-# Mumble source tree or at <https://www.mumble.info/LICENSE>.
-
-
-# Copyright 2020 The 'mumble-releng-experimental' Authors. All rights reserved.
-# Use of this source code is governed by a BSD-style license that
-# can be found in the LICENSE file in the source tree or at
-# <http://mumble.info/mumble-releng-experimental/LICENSE>.
-
-# Helper function to check if a certain parameter has been passed to the script
-has_option() {
-    local desiredOption="$1"
-    shift
-    for currentOption in "$@"; do
-        if [[ $currentOption == "$desiredOption" ]]; then
-            return 0
-        fi
-    done
-    return 1
-}
-
-if ! has_option '--auto' "$@"
-    then
-	# Make sure the command-prompt stays open if an error is encountered so that the user can read
-	# the error message before the console closes.
-	# If you run call this script as part of some automation, you'll want to pass --auto
-	# to make sure you don't get stuck.
-	trap "printf '\n\n'; read -p 'ERROR encountered... Press Enter to exit'" ERR
-fi
-
 # On failed command (error code) exit the whole script
 set -e
 # Treat using unset variables as errors
@@ -39,56 +7,82 @@ set -u
 # For piped commands on command failure fail entire pipe instead of only the last command being significant
 set -o pipefail
 
-mumble_deps='qt5-base[mysqlplugin],
-            qt5-base[postgresqlplugin],
-            qt5-svg,
-            qt5-tools,
-            qt5-translations,
-            boost-accumulators,
-            poco,
-            libvorbis,
-            libogg,
-            libflac,
-            libsndfile,
-            protobuf,
-            zlib,
-            zeroc-ice-mumble'
+function error_msg {
+	>&2 echo "[ERROR] $@"
+}
 
-# Determine vcpkg triplet from OS https://github.com/Microsoft/vcpkg/blob/master/docs/users/triplets.md
-# Available triplets can be printed with `vcpkg help triplet`
-case "$OSTYPE" in
-    msys* ) triplet='x64-windows-static-md'
-        xcompile_triplet='x86-windows-static-md'
-    ;;
-    linux-gnu* ) triplet='x64-linux';;
-    darwin* ) triplet='x64-osx';;
-    * ) echo "The OSTYPE is either not defined or unsupported. Aborting...";;
-esac
+SCRIPT_DIR="$( dirname "$0" )"
+TRIPLET=""
+AUTO=false
 
-if [ ! -x ./vcpkg ]
-    then
+LONGOPTIONS="--triplet:,--auto"
+OPTIONS="+t:"
+PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTIONS --name "$(basename "$0")" -- "$@")
+# Import the parsed variables in a way that preserves quoting
+eval set -- "$PARSED"
+
+while true; do
+	case "$1" in
+		-t|--triplet)    shift; TRIPLET="$1" ;;
+		--auto)          AUTO=true ;;
+	    --)              shift; break ;;
+		*)               error_msg "Invalid option '$1'" ;;
+	esac
+	shift
+done
+
+if [[ "$AUTO" = "false" ]]; then
+	# Make sure the command-prompt stays open if an error is encountered so that the user can read
+	# the error message before the console closes.
+	# If you run call this script as part of some automation, you'll want to pass --auto
+	# to make sure you don't get stuck.
+	trap "printf '\n\n'; read -p 'ERROR encountered... Press Enter to exit'" ERR
+fi
+
+
+readarray -t MUMBLE_DEPS < "$SCRIPT_DIR/mumble_dependencies.txt"
+
+if [[ -z "$TRIPLET" ]]; then
+	# Determine vcpkg triplet from OS
+	# Available triplets can be printed with `vcpkg help triplet`
 	case "$OSTYPE" in
-	    msys* ) ./bootstrap-vcpkg.bat -disableMetrics
-	    ;;
-	    * ) bash bootstrap-vcpkg.sh -disableMetrics
-	    ;;
+		msys*)      TRIPLET="x64-windows-static-md"; XCOMPILE_TRIPLET="x86-windows-static-md" ;;
+		linux-gnu*) TRIPLET="x64-linux";;
+		darwin*)
+				if [[ "$( uname -m )" = "x86_64" ]]; then
+					TRIPLET="x64-osx"
+				else
+					TRIPLET="arm64-osx"
+				fi
+			;;
+		*) error_msg "The OSTYPE is either not defined or unsupported. Aborting..."; exit 1;;
 	esac
 fi
 
-echo "Building for triplet $triplet"
+if [[ ! -x "$SCRIPT_DIR/vcpkg" ]]; then
+	case "$OSTYPE" in
+	    msys*) "$SCRIPT_DIR/bootstrap-vcpkg.bat" -disableMetrics ;;
+	    *)      bash "$SCRIPT_DIR/bootstrap-vcpkg.sh" -disableMetrics ;;
+	esac
+fi
 
-if [ -z "$triplet" ]
-    then
-    echo "Triplet type is not defined! Aborting..."
+echo "Building for triplet $TRIPLET"
+
+if [[ -z "$TRIPLET" ]]; then
+    error_msg "Triplet type is not defined! Aborting..."
+	exit 2
 else
-    if [ $OSTYPE == msys ]
-	then
+    if [[ $OSTYPE == msys ]]; then
 	    # install dns-sd provider
-	    ./vcpkg install mdnsresponder icu --triplet $triplet
-	    ./vcpkg install boost-optional:$xcompile_triplet --clean-after-build
+		MUMBLE_DEPS+=("mdnsresponder")
+		MUMBLE_DEPS+=("icu")
+
+		echo "Building xcompile dependencies..."
+	    "$SCRIPT_DIR/vcpkg" install --triplet "$XCOMPILE_TRIPLET" boost-optional --clean-after-build
     fi
-    for dep in ${mumble_deps//,/ }
-    do
-	./vcpkg install $dep:$triplet --clean-after-build
+
+    for dep in "${MUMBLE_DEPS[@]}"; do
+		echo "Building dependency '$dep'..."
+		"$SCRIPT_DIR/vcpkg" install --triplet "$TRIPLET" "$dep" --clean-after-build
     done
 fi

@@ -52,7 +52,7 @@ if [[ -z "$TRIPLET" ]]; then
 				# Otherwise, compiling the vcpkg libs could produce instructions that older Mac hardware
 				# doesn't understand but that Mumble is still supposed to run on.
 				# This initializes CMAKE_OSX_DEPLOYMENT_TARGET
-				export MACOSX_DEPLOYMENT_TARGET="10.13"
+				export MACOSX_DEPLOYMENT_TARGET="10.15"
 				if [[ "$( uname -m )" = "x86_64" ]]; then
 					TRIPLET="x64-osx-release"
 				else

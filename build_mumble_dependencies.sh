@@ -46,7 +46,7 @@ if [[ -z "$TRIPLET" ]]; then
 	# Available triplets can be printed with `vcpkg help triplet`
 	case "$OSTYPE" in
 		msys*)      TRIPLET="x64-windows-static-md"; XCOMPILE_TRIPLET="x86-windows-static-md" ;;
-		linux-gnu*) TRIPLET="x64-linux";;
+		linux-gnu*) TRIPLET="x64-linux" ;;
 		darwin*)
 				if [[ "$( uname -m )" = "x86_64" ]]; then
 					TRIPLET="x64-osx"
@@ -69,21 +69,32 @@ echo "Building for triplet $TRIPLET"
 if [[ -z "$TRIPLET" ]]; then
     error_msg "Triplet type is not defined! Aborting..."
 	exit 2
-else
-    if [[ $OSTYPE == msys ]]; then
-	    # install dns-sd provider
-		MUMBLE_DEPS+=("mdnsresponder")
-		MUMBLE_DEPS+=("icu")
-
-		echo "Building xcompile dependencies..."
-	    "$SCRIPT_DIR/vcpkg" install --triplet "$XCOMPILE_TRIPLET" boost-optional --clean-after-build --recurse
-    fi
-
-    for dep in "${MUMBLE_DEPS[@]}"; do
-		echo "Building dependency '$dep'..."
-		"$SCRIPT_DIR/vcpkg" install --triplet "$TRIPLET" "$dep" --clean-after-build --recurse
-		# In case the dependency is already installed, but not up-to-date
-		# Unfortunately there is no clean-after-build for this one
-		"$SCRIPT_DIR/vcpkg" upgrade --triplet "$TRIPLET" "$( echo "$dep" | sed 's/\[.*\]//g' )" --no-dry-run
-    done
 fi
+
+EXPORTED_NAME="mumble_env.$TRIPLET.$( date +"%Y-%m-%d" ).$( git -C "$SCRIPT_DIR" rev-parse --short --verify HEAD )"
+ALL_DEPS=()
+
+if [[ $OSTYPE == msys ]]; then
+	# install dns-sd provider
+	MUMBLE_DEPS+=("mdnsresponder")
+	MUMBLE_DEPS+=("icu")
+
+	echo "Building xcompile dependencies..."
+	"$SCRIPT_DIR/vcpkg" install --triplet "$XCOMPILE_TRIPLET" boost-optional --clean-after-build --recurse
+	"$SCRIPT_DIR/vcpkg" upgrade --triplet "$XCOMPILE_TRIPLET" boost-optional --no-dry-run
+	ALL_DEPS+=("boost-optional:$XCOMPILE_TRIPLET")
+fi
+
+for dep in "${MUMBLE_DEPS[@]}"; do
+	echo "Building dependency '$dep'..."
+	"$SCRIPT_DIR/vcpkg" install --triplet "$TRIPLET" "$dep" --clean-after-build --recurse
+	# In case the dependency is already installed, but not up-to-date
+	# Unfortunately there is no clean-after-build for this one
+	depName="$( echo "$dep" | sed 's/\[.*\]//g' )"
+	"$SCRIPT_DIR/vcpkg" upgrade --triplet "$TRIPLET" "$depName" --no-dry-run
+	ALL_DEPS+=("$depName:$TRIPLET")
+done
+
+"$SCRIPT_DIR/vcpkg" export --raw --output "$EXPORTED_NAME" --output-dir "$SCRIPT_DIR" "${ALL_DEPS[@]}"
+
+echo "Exported Mumble dependencies to directory '$SCRIPT_DIR/$EXPORTED_NAME' - all that's left to do is to compress it"

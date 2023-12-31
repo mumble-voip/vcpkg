@@ -1,6 +1,6 @@
 param (
-	[string]$TRIPLET = "x64-windows-static-md",
-	[string]$XCOMPILE_TRIPLET = "x86-windows-static-md",
+	[string]$TRIPLET = "x64-windows-static-md-release",
+	[string]$XCOMPILE_TRIPLET = "x86-windows-static-md-release",
 	[switch]$AUTO = $False
 )
 

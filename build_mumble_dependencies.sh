@@ -45,17 +45,18 @@ if [[ -z "$TRIPLET" ]]; then
 	# Determine vcpkg triplet from OS
 	# Available triplets can be printed with `vcpkg help triplet`
 	case "$OSTYPE" in
-		msys*)      TRIPLET="x64-windows-static-md"; XCOMPILE_TRIPLET="x86-windows-static-md" ;;
-		linux-gnu*) TRIPLET="x64-linux" ;;
+		msys*)      TRIPLET="x64-windows-static-release-md-release"; XCOMPILE_TRIPLET="x86-windows-static-md-release" ;;
+		linux-gnu*) TRIPLET="x64-linux-release" ;;
 		darwin*)
 				# This must be <= the value that is used for compiling Mumble itself
 				# Otherwise, compiling the vcpkg libs could produce instructions that older Mac hardware
 				# doesn't understand but that Mumble is still supposed to run on.
+				# This initializes CMAKE_OSX_DEPLOYMENT_TARGET
 				export MACOSX_DEPLOYMENT_TARGET="10.13"
 				if [[ "$( uname -m )" = "x86_64" ]]; then
-					TRIPLET="x64-osx"
+					TRIPLET="x64-osx-release"
 				else
-					TRIPLET="arm64-osx"
+					TRIPLET="arm64-osx-release"
 				fi
 			;;
 		*) error_msg "The OSTYPE is either not defined or unsupported. Aborting..."; exit 1;;
@@ -100,5 +101,3 @@ for dep in "${MUMBLE_DEPS[@]}"; do
 done
 
 "$SCRIPT_DIR/vcpkg" export --raw --output "$EXPORTED_NAME" --output-dir "$SCRIPT_DIR" "${ALL_DEPS[@]}"
-
-echo "Exported Mumble dependencies to directory '$SCRIPT_DIR/$EXPORTED_NAME' - all that's left to do is to compress it"

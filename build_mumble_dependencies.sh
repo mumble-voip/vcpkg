@@ -48,6 +48,10 @@ if [[ -z "$TRIPLET" ]]; then
 		msys*)      TRIPLET="x64-windows-static-md"; XCOMPILE_TRIPLET="x86-windows-static-md" ;;
 		linux-gnu*) TRIPLET="x64-linux" ;;
 		darwin*)
+				# This must be <= the value that is used for compiling Mumble itself
+				# Otherwise, compiling the vcpkg libs could produce instructions that older Mac hardware
+				# doesn't understand but that Mumble is still supposed to run on.
+				export MACOSX_DEPLOYMENT_TARGET="10.13"
 				if [[ "$( uname -m )" = "x86_64" ]]; then
 					TRIPLET="x64-osx"
 				else

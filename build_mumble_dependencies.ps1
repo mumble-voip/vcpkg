@@ -17,9 +17,14 @@ $MUMBLE_DEPS += "icu"
 # Always bootstrap vcpkg to ensure we got the latest one
 Start-Process -FilePath "$PSScriptRoot\bootstrap-vcpkg.bat" -ArgumentList @( "-disableMetrics" )
 
+$EXPORTED_NAME = "mumble_env.$TRIPLET.$( Get-Date -Format "yyyy-MM-dd" ).$( git -C "$PSScriptRoot" rev-parse --short --verify HEAD )"
+$ALL_DEPS = @()
+
 if ("$TRIPLET" -ne "$XCOMPILE_TRIPLET") {
 	Write-Host "Building xcompile dependencies..."
 	& "$PSScriptRoot/vcpkg.exe" install --triplet "$XCOMPILE_TRIPLET" boost-optional --clean-after-build --recurse
+	& "$PSScriptRoot/vcpkg.exe" upgrade --triplet "$XCOMPILE_TRIPLET" boost-optional --no-dry-run
+	$ALL_DEPS += "boost-optional:$XCOMPILE_TRIPLET"
 }
 
 foreach ($dep in $MUMBLE_DEPS) {
@@ -29,4 +34,7 @@ foreach ($dep in $MUMBLE_DEPS) {
 	# Unfortunately there is no clean-after-build for this one
 	$dep = $dep -replace '\[.*\]'
 	& "$PSScriptRoot/vcpkg.exe" upgrade --triplet "$TRIPLET" "$dep" --no-dry-run
+	$ALL_DEPS += "${dep}:$TRIPLET"
 }
+
+& "$PSScriptRoot/vcpkg.exe" export --raw --output "$EXPORTED_NAME" --output-dir "$PSScriptRoot" @ALL_DEPS

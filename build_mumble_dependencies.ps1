@@ -15,7 +15,7 @@ $MUMBLE_DEPS += "mdnsresponder"
 $MUMBLE_DEPS += "icu"
 
 # Always bootstrap vcpkg to ensure we got the latest one
-Start-Process -FilePath "$PSScriptRoot\bootstrap-vcpkg.bat" -ArgumentList @( "-disableMetrics" )
+Start-Process -FilePath "$PSScriptRoot\bootstrap-vcpkg.bat" -ArgumentList @( "-disableMetrics" ) -Wait
 
 $EXPORTED_NAME = "mumble_env.$TRIPLET.$( Get-Date -Format "yyyy-MM-dd" ).$( git -C "$PSScriptRoot" rev-parse --short --verify HEAD )"
 $ALL_DEPS = @()

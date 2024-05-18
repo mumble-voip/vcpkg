@@ -4,11 +4,12 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO aws/aws-sdk-cpp
     REF "${VERSION}"
-    SHA512 1288e462881fba65462922a7ffe920eb3d72483c349a20ddae0d9e9ac1c0a0cee2959a76a451127bcee680f510023a6466757d11e5a08bf3624f73bb0c204598
+    SHA512 826be806ddd87eb452f97df70b19df4194e984775408d8f99246244b6949abcab583e4cbe1ae3bc5d61f3c78267d0e75ea9e69956188ab12e0318344a4314591
     PATCHES
         patch-relocatable-rpath.patch
         fix-aws-root.patch
         lock-curl-http-and-tls-settings.patch
+        fix_find_curl.patch
 )
 
 string(COMPARE EQUAL "${VCPKG_CRT_LINKAGE}" "dynamic" FORCE_SHARED_CRT)

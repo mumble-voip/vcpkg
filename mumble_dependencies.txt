@@ -1,6 +1,4 @@
-qt5-base[mysqlplugin,postgresqlplugin]
-qt5-svg
-qt5-tools
+qt5-base
 qt5-translations
 boost
 opus
@@ -12,3 +10,6 @@ libsndfile
 protobuf
 zlib
 zeroc-ice-mumble
+libpq
+sqlite3
+libmysql

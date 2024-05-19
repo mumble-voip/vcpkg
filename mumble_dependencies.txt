@@ -13,3 +13,4 @@ zeroc-ice-mumble
 libpq
 sqlite3
 libmysql
+pugixml

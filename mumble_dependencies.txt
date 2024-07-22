@@ -1,7 +1,7 @@
-qt5-base[mysqlplugin,postgresqlplugin]
-qt5-svg
-qt5-tools
-qt5-translations
+qtbase[sql-mysql,sql-odbc,sql-psql,sql-sqlite]
+qtsvg
+qttools
+qttranslations
 boost
 opus
 poco

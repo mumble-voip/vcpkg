@@ -4,7 +4,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO ShiftMediaProject/gnutls
     REF ${VERSION}
-    SHA512 4be02eac5fd52ba02a69f3fb70dc1100d930e7e5f50f0106cb7e266e9fb3c6e12c14741317c097de85b5dc924f993a1ad6f220d33ae187c24fe5f670380b0c96
+    SHA512 db318ee923d0810484e98342cc395624efc52b7227020fc14b9fa9ae63e4b8bf254cfd90470e051cd992fb167fb839fff340430a223bcc50d1422f1738a5b599
     HEAD_REF master
     PATCHES
         external-libtasn1.patch
@@ -162,12 +162,15 @@ set(includedir "\${prefix}/include")
 set(GNUTLS_LIBS "-lgnutls")
 configure_file("${SOURCE_PATH}/lib/gnutls.pc.in" "${CURRENT_PACKAGES_DIR}/lib/pkgconfig/gnutls.pc" @ONLY)
 
-set(prefix "${CURRENT_INSTALLED_DIR}/debug")
-set(exec_prefix "\${prefix}")
-set(libdir "\${prefix}/lib")
-set(includedir "\${prefix}/../include")
-set(GNUTLS_LIBS "-lgnutlsd")
-configure_file("${SOURCE_PATH}/lib/gnutls.pc.in" "${CURRENT_PACKAGES_DIR}/debug/lib/pkgconfig/gnutls.pc" @ONLY)
+if(NOT VCPKG_BUILD_TYPE)
+  set(prefix "${CURRENT_INSTALLED_DIR}/debug")
+  set(exec_prefix "\${prefix}")
+  set(libdir "\${prefix}/lib")
+  set(includedir "\${prefix}/../include")
+  set(GNUTLS_LIBS "-lgnutlsd")
+  configure_file("${SOURCE_PATH}/lib/gnutls.pc.in" "${CURRENT_PACKAGES_DIR}/debug/lib/pkgconfig/gnutls.pc" @ONLY)
+endif()
 
 vcpkg_fixup_pkgconfig()
 vcpkg_copy_pdbs()
+file(COPY "${CURRENT_PORT_DIR}/vcpkg-cmake-wrapper.cmake" DESTINATION "${CURRENT_PACKAGES_DIR}/share/gnutls")

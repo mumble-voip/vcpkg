@@ -9,8 +9,10 @@ opus
 poco
 protobuf
 pugixml
-qt5-base
-qt5-translations
+qtbase
+qtsvg
+qttools
+qttranslations
 sqlite3
 zeroc-ice-mumble
 zlib

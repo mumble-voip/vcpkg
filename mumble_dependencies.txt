@@ -13,6 +13,7 @@ qtbase
 qtsvg
 qttools
 qttranslations
+soci[mysql,postgresql,sqlite3]
 sqlite3
 zeroc-ice-mumble
 zlib

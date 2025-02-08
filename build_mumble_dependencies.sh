@@ -45,18 +45,13 @@ if [[ -z "$TRIPLET" ]]; then
 	# Determine vcpkg triplet from OS
 	# Available triplets can be printed with `vcpkg help triplet`
 	case "$OSTYPE" in
-		msys*)      TRIPLET="x64-windows-static-release-md-release"; XCOMPILE_TRIPLET="x86-windows-static-md-release" ;;
-		linux-gnu*) TRIPLET="x64-linux-release" ;;
+		msys*)      TRIPLET="x64-windows-static-md"; XCOMPILE_TRIPLET="x86-windows-static-md" ;;
+		linux-gnu*) TRIPLET="x64-linux" ;;
 		darwin*)
-				# This must be <= the value that is used for compiling Mumble itself
-				# Otherwise, compiling the vcpkg libs could produce instructions that older Mac hardware
-				# doesn't understand but that Mumble is still supposed to run on.
-				# This initializes CMAKE_OSX_DEPLOYMENT_TARGET
-				export MACOSX_DEPLOYMENT_TARGET="10.15"
 				if [[ "$( uname -m )" = "x86_64" ]]; then
-					TRIPLET="x64-osx-release"
+					TRIPLET="x64-osx"
 				else
-					TRIPLET="arm64-osx-release"
+					TRIPLET="arm64-osx"
 				fi
 			;;
 		*) error_msg "The OSTYPE is either not defined or unsupported. Aborting..."; exit 1;;
@@ -76,6 +71,8 @@ if [[ -z "$TRIPLET" ]]; then
 	exit 2
 fi
 
+OVERLAY_TRIPLETS="$SCRIPT_DIR/mumble_triplets/"
+
 EXPORTED_NAME="mumble_env.$TRIPLET.$( date +"%Y-%m-%d" ).$( git -C "$SCRIPT_DIR" rev-parse --short --verify HEAD )"
 ALL_DEPS=()
 
@@ -85,18 +82,18 @@ if [[ $OSTYPE == msys ]]; then
 	MUMBLE_DEPS+=("icu")
 
 	echo "Building xcompile dependencies..."
-	"$SCRIPT_DIR/vcpkg" install --triplet "$XCOMPILE_TRIPLET" boost-optional --clean-after-build --recurse
-	"$SCRIPT_DIR/vcpkg" upgrade --triplet "$XCOMPILE_TRIPLET" boost-optional --no-dry-run
+	"$SCRIPT_DIR/vcpkg" install --overlay-triplets "$OVERLAY_TRIPLETS" --triplet "$XCOMPILE_TRIPLET" boost-optional --clean-after-build --recurse
+	"$SCRIPT_DIR/vcpkg" upgrade --overlay-triplets "$OVERLAY_TRIPLETS" --triplet "$XCOMPILE_TRIPLET" boost-optional --no-dry-run
 	ALL_DEPS+=("boost-optional:$XCOMPILE_TRIPLET")
 fi
 
 for dep in "${MUMBLE_DEPS[@]}"; do
 	echo "Building dependency '$dep'..."
-	"$SCRIPT_DIR/vcpkg" install --triplet "$TRIPLET" "$dep" --clean-after-build --recurse
+	"$SCRIPT_DIR/vcpkg" install --overlay-triplets "$OVERLAY_TRIPLETS" --triplet "$TRIPLET" "$dep" --clean-after-build --recurse
 	# In case the dependency is already installed, but not up-to-date
 	# Unfortunately there is no clean-after-build for this one
 	depName="$( echo "$dep" | sed 's/\[.*\]//g' )"
-	"$SCRIPT_DIR/vcpkg" upgrade --triplet "$TRIPLET" "$depName" --no-dry-run
+	"$SCRIPT_DIR/vcpkg" upgrade --overlay-triplets "$OVERLAY_TRIPLETS" --triplet "$TRIPLET" "$depName" --no-dry-run
 	ALL_DEPS+=("$depName:$TRIPLET")
 done
 

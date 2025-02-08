@@ -9,6 +9,8 @@ if (! $AUTO) {
 	trap { Read-Host "ERROR encountered... Press Enter to exit" }
 }
 
+$OVERLAY_TRIPLETS = "$PSScriptRoot/mumble_triplets/"
+
 $MUMBLE_DEPS = Get-Content -Path "$PSScriptRoot\mumble_dependencies.txt"
 # Windows-specific dependencies
 $MUMBLE_DEPS += "mdnsresponder"
@@ -22,18 +24,18 @@ $ALL_DEPS = @()
 
 if ("$TRIPLET" -ne "$XCOMPILE_TRIPLET") {
 	Write-Host "Building xcompile dependencies..."
-	& "$PSScriptRoot/vcpkg.exe" install --triplet "$XCOMPILE_TRIPLET" boost-optional --clean-after-build --recurse
-	& "$PSScriptRoot/vcpkg.exe" upgrade --triplet "$XCOMPILE_TRIPLET" boost-optional --no-dry-run
+	& "$PSScriptRoot/vcpkg.exe" install --overlay-triplets "$OVERLAY_TRIPLETS" --triplet "$XCOMPILE_TRIPLET" boost-optional --clean-after-build --recurse
+	& "$PSScriptRoot/vcpkg.exe" upgrade --overlay-triplets "$OVERLAY_TRIPLETS" --triplet "$XCOMPILE_TRIPLET" boost-optional --no-dry-run
 	$ALL_DEPS += "boost-optional:$XCOMPILE_TRIPLET"
 }
 
 foreach ($dep in $MUMBLE_DEPS) {
 	Write-Host "Building dependency $dep"
-	& "$PSScriptRoot/vcpkg.exe" install --triplet "$TRIPLET" "$dep" --clean-after-build --recurse
+	& "$PSScriptRoot/vcpkg.exe" install --overlay-triplets "$OVERLAY_TRIPLETS" --triplet "$TRIPLET" "$dep" --clean-after-build --recurse
 	# In case the dependency is already installed, but not up-to-date
 	# Unfortunately there is no clean-after-build for this one
 	$dep = $dep -replace '\[.*\]'
-	& "$PSScriptRoot/vcpkg.exe" upgrade --triplet "$TRIPLET" "$dep" --no-dry-run
+	& "$PSScriptRoot/vcpkg.exe" upgrade --overlay-triplets "$OVERLAY_TRIPLETS" --triplet "$TRIPLET" "$dep" --no-dry-run
 	$ALL_DEPS += "${dep}:$TRIPLET"
 }
 

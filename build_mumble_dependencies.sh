@@ -82,18 +82,18 @@ if [[ $OSTYPE == msys ]]; then
 	MUMBLE_DEPS+=("icu")
 
 	echo "Building xcompile dependencies..."
-	"$SCRIPT_DIR/vcpkg" install --overlay-triplets "$OVERLAY_TRIPLETS" --triplet "$XCOMPILE_TRIPLET" boost-optional --clean-after-build --recurse
-	"$SCRIPT_DIR/vcpkg" upgrade --overlay-triplets "$OVERLAY_TRIPLETS" --triplet "$XCOMPILE_TRIPLET" boost-optional --no-dry-run
+	"$SCRIPT_DIR/vcpkg" install --overlay-triplets "$OVERLAY_TRIPLETS" --triplet "$XCOMPILE_TRIPLET" --host-triplet "$TRIPLET" boost-optional --clean-after-build --recurse
+	"$SCRIPT_DIR/vcpkg" upgrade --overlay-triplets "$OVERLAY_TRIPLETS" --triplet "$XCOMPILE_TRIPLET" --host-triplet "$TRIPLET" boost-optional --no-dry-run
 	ALL_DEPS+=("boost-optional:$XCOMPILE_TRIPLET")
 fi
 
 for dep in "${MUMBLE_DEPS[@]}"; do
 	echo "Building dependency '$dep'..."
-	"$SCRIPT_DIR/vcpkg" install --overlay-triplets "$OVERLAY_TRIPLETS" --triplet "$TRIPLET" "$dep" --clean-after-build --recurse
+	"$SCRIPT_DIR/vcpkg" install --overlay-triplets "$OVERLAY_TRIPLETS" --triplet "$TRIPLET" --host-triplet "$TRIPLET" "$dep" --clean-after-build --recurse
 	# In case the dependency is already installed, but not up-to-date
 	# Unfortunately there is no clean-after-build for this one
 	depName="$( echo "$dep" | sed 's/\[.*\]//g' )"
-	"$SCRIPT_DIR/vcpkg" upgrade --overlay-triplets "$OVERLAY_TRIPLETS" --triplet "$TRIPLET" "$depName" --no-dry-run
+	"$SCRIPT_DIR/vcpkg" upgrade --overlay-triplets "$OVERLAY_TRIPLETS" --triplet "$TRIPLET" --host-triplet "$TRIPLET" "$depName" --no-dry-run
 	ALL_DEPS+=("$depName:$TRIPLET")
 done
 

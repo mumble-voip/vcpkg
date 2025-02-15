@@ -43,4 +43,4 @@ foreach ($dep in $MUMBLE_DEPS) {
 
 # Get rid of spurious PDB files
 # From https://stackoverflow.com/a/23768332
-Get-ChildItem "$EXPORTED_NAME" -Recurse | Where{$_.Name -Match "*.pdb" -and !$_.PSIsContainer} | Remove-Item
+Get-ChildItem "$PSScriptRoot/$EXPORTED_NAME" -Recurse | Where{$_.Name -Match ".*\.pdb" -and !$_.PSIsContainer} | Remove-Item

@@ -40,3 +40,7 @@ foreach ($dep in $MUMBLE_DEPS) {
 }
 
 & "$PSScriptRoot/vcpkg.exe" export --raw --output "$EXPORTED_NAME" --output-dir "$PSScriptRoot" @ALL_DEPS
+
+# Get rid of spurious PDB files
+# From https://stackoverflow.com/a/23768332
+Get-ChildItem "$EXPORTED_NAME" -Recurse | Where{$_.Name -Match "*.pdb" -and !$_.PSIsContainer} | Remove-Item

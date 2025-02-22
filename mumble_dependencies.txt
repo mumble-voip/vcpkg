@@ -30,6 +30,7 @@ qtsvg
 qttools
 qttranslations
 soci[mysql,postgresql,sqlite3]
+spdlog
 sqlite3
 zeroc-ice-mumble
 zlib

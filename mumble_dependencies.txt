@@ -25,7 +25,7 @@ opus
 poco
 protobuf
 pugixml
-qtbase
+qtbase[sql-sqlite]
 qtsvg
 qttools
 qttranslations

@@ -2,7 +2,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO wxWidgets/wxWidgets
     REF "v${VERSION}"
-    SHA512 0834cb1f4f2e294b721abeef659f696156b9a7474a6a770197f2295a598cce5547671634036a96739b063bb6482f5cb0092b5f704dc5ceb1c002c4e1782df197
+    SHA512 6ee71c6a61431097dd0cb4618d8eba67be2c7ae76d9ed33f5da35c3f4077070f052994f3bd9396dcce4eb2fd8de8f484dc0eee1c3befcfe132717a4a23999fcc
     HEAD_REF master
     PATCHES
         install-layout.patch
@@ -43,6 +43,14 @@ else()
     list(APPEND OPTIONS -DwxUSE_WEBREQUEST_CURL=ON)
 endif()
 
+if(VCPKG_TARGET_IS_WINDOWS)
+    if(VCPKG_CRT_LINKAGE STREQUAL "dynamic")
+        list(APPEND OPTIONS -DwxBUILD_USE_STATIC_RUNTIME=OFF)
+    else()
+        list(APPEND OPTIONS -DwxBUILD_USE_STATIC_RUNTIME=ON)
+    endif()
+endif()
+
 vcpkg_find_acquire_program(PKGCONFIG)
 
 # This may be set to ON by users in a custom triplet.
@@ -75,6 +83,7 @@ vcpkg_cmake_configure(
         -DwxUSE_UIACTIONSIMULATOR=OFF
         -DCMAKE_DISABLE_FIND_PACKAGE_GSPELL=ON
         -DCMAKE_DISABLE_FIND_PACKAGE_MSPACK=ON
+        -DwxBUILD_INSTALL_RUNTIME_DIR:PATH=bin
         ${OPTIONS}
         "-DPKG_CONFIG_EXECUTABLE=${PKGCONFIG}"
         # The minimum cmake version requirement for Cotire is 2.8.12.
@@ -187,6 +196,12 @@ if("example" IN_LIST FEATURES)
 endif()
 
 configure_file("${CMAKE_CURRENT_LIST_DIR}/vcpkg-cmake-wrapper.cmake" "${CURRENT_PACKAGES_DIR}/share/${PORT}/vcpkg-cmake-wrapper.cmake" @ONLY)
+
+file(REMOVE "${CURRENT_PACKAGES_DIR}/wxwidgets.props")
+file(REMOVE "${CURRENT_PACKAGES_DIR}/debug/wxwidgets.props")
+file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/build")
+file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/build")
+file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
 
 file(INSTALL "${CMAKE_CURRENT_LIST_DIR}/usage" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}")
 vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/docs/licence.txt")

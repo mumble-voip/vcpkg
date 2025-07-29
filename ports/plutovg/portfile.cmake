@@ -2,8 +2,8 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO sammycage/plutovg
     REF "v${VERSION}"
-    SHA512 e68e6c186d7577bd17e5c46c3109fbeaba0bd0698599c401d195430c3375170d5d5ed45379fdc2c6f1fea817e1ae01cddaf6b3de9130f5896b8adc9f2bab105b
-    HEAD_REF master
+    SHA512 e23830789401ad1dbf611451ce80e8a12391145dca28f26180cb2875a299ea38b5cb27311a17fd729a1341b96c1ff3c13248a8a6b9945ea981700bc51bba32c7
+    HEAD_REF main
 )
 
 vcpkg_cmake_configure(
@@ -14,6 +14,7 @@ vcpkg_cmake_configure(
 vcpkg_cmake_install()
 vcpkg_copy_pdbs()
 vcpkg_cmake_config_fixup(CONFIG_PATH lib/cmake/plutovg)
+vcpkg_fixup_pkgconfig()
 
 if(VCPKG_LIBRARY_LINKAGE STREQUAL "static")
     vcpkg_replace_string("${CURRENT_PACKAGES_DIR}/include/plutovg/plutovg.h" "defined(PLUTOVG_BUILD_STATIC)" "1")

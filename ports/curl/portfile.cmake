@@ -4,14 +4,11 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO curl/curl
     REF ${curl_version}
-    SHA512 04f6160c3c63c59e80987df61959bf0079c5be1d63bc40189933cebd3046850d680f1e030e8e7cd7f04417146982c6410ba70c8441af75d43b7b24fc7fbcb1d2
+    SHA512 d4a560e225d0110133f44ed57cf5394c1710530c5fec395d02baafaac9ea2186dd543047ae27fd7542894b8744070760516ae611602105b1b40605abbf84e684
     HEAD_REF master
     PATCHES
-        0005_remove_imp_suffix.patch
-        export-components.patch
         dependencies.patch
         pkgconfig-curl-config.patch
-        cmake-config.patch
 )
 
 vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
@@ -26,7 +23,6 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
         sspi        CURL_WINDOWS_SSPI
         brotli      CURL_BROTLI
         schannel    CURL_USE_SCHANNEL
-        sectransp   CURL_USE_SECTRANSP
         idn2        USE_LIBIDN2
         winidn      USE_WIN32_IDN
         zstd        CURL_ZSTD
@@ -35,6 +31,8 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
         gsasl       CURL_USE_GSASL
         gnutls      CURL_USE_GNUTLS
         rtmp        USE_LIBRTMP
+        httpsrr     USE_HTTPSRR
+        ssls-export USE_SSLS_EXPORT
     INVERTED_FEATURES
         ldap        CURL_DISABLE_LDAP
         ldap        CURL_DISABLE_LDAPS
@@ -48,11 +46,9 @@ if("sectransp" IN_LIST FEATURES)
     list(APPEND OPTIONS -DCURL_CA_PATH=none -DCURL_CA_BUNDLE=none)
 endif()
 
-# UWP targets
 if(VCPKG_TARGET_IS_UWP)
     list(APPEND OPTIONS
         -DCURL_DISABLE_TELNET=ON
-        -DENABLE_IPV6=OFF
         -DENABLE_UNIX_SOCKETS=OFF
     )
 endif()
@@ -72,6 +68,7 @@ vcpkg_cmake_configure(
         ${OPTIONS}
         -DBUILD_TESTING=OFF
         -DENABLE_CURL_MANUAL=OFF
+        -DIMPORT_LIB_SUFFIX=   # empty
         -DSHARE_LIB_OBJECT=OFF
         -DCURL_CA_FALLBACK=ON
         -DCURL_USE_PKGCONFIG=ON
@@ -137,7 +134,7 @@ string(REGEX REPLACE "#i.*" "" krb5_c "${krb5_c}")
 set(krb5_copyright "${CURRENT_BUILDTREES_DIR}/krb5.c Notice")
 file(WRITE "${krb5_copyright}" "${krb5_c}")
 
-file(READ "${SOURCE_PATH}/lib/inet_ntop.c" inet_ntop_c)
+file(READ "${SOURCE_PATH}/lib/curlx/inet_ntop.c" inet_ntop_c)
 string(REGEX REPLACE "#i.*" "" inet_ntop_c "${inet_ntop_c}")
 set(inet_ntop_copyright "${CURRENT_BUILDTREES_DIR}/inet_ntop.c and inet_pton.c Notice")
 file(WRITE "${inet_ntop_copyright}" "${inet_ntop_c}")

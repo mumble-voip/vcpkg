@@ -2,7 +2,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO libsdl-org/SDL
     REF "release-${VERSION}"
-    SHA512 627f8e519f3426df28935c94999f311ade0deec36bfdc120e5edcb8ffc358c543f9c0f9d9ddbe0d8f005bb30a11f223d8f34388dc3a19aefe6a83cddeaa95402
+    SHA512 81f41969bd9bea8d50d1ffb7e6ff7c3238bdc03ef7f236680aeb3c0b8ac79216b37ba112edddb1827efe11d6a5f916c284392856c910e332f6f93e5b60184753
     HEAD_REF main
 )
 
@@ -27,6 +27,11 @@ if ("wayland" IN_LIST FEATURES)
 endif()
 if ("ibus" IN_LIST FEATURES)
     message(WARNING "You will need to install ibus dependencies to use feature ibus:\nsudo apt install libibus-1.0-dev\n")
+endif()
+# option for not need to show windows
+list(APPEND FEATURE_OPTIONS -DSDL_UNIX_CONSOLE_BUILD=ON)
+if (VCPKG_TARGET_IS_LINUX AND NOT "x11" IN_LIST FEATURES AND NOT "wayland" IN_LIST FEATURES)
+    message(WARNING "The selected features don't allow sdl3 to create windows, which is usually unintentional. You can get windowing support by installing the x11 and/or wayland features.")
 endif()
 
 vcpkg_cmake_configure(

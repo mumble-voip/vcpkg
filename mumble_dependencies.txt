@@ -21,7 +21,7 @@ libpq
 libsndfile
 libvorbis
 opus
-poco
+poco[zip,xml]
 protobuf
 qt5-base[mysqlplugin,postgresqlplugin]
 qt5-svg

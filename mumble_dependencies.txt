@@ -22,7 +22,7 @@ libpq
 libsndfile
 libvorbis
 opus
-poco
+poco[zip,xml]
 protobuf
 pugixml
 qtbase[sql-sqlite]

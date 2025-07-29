@@ -16,7 +16,6 @@ boost-preprocessor
 boost-system
 boost-variant
 libflac
-libmysql
 libogg
 libpq
 libsndfile
@@ -24,14 +23,11 @@ libvorbis
 opus
 poco
 protobuf
-pugixml
-qtbase[sql-sqlite]
-qtsvg
-qttools
-qttranslations
+qt5-base[mysqlplugin,postgresqlplugin]
+qt5-svg
+qt5-tools
+qt5-translations
 soci[mysql,postgresql,sqlite3]
 speexdsp
-spdlog
-sqlite3
 zeroc-ice-mumble
 zlib

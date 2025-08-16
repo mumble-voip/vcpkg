@@ -98,3 +98,14 @@ for dep in "${MUMBLE_DEPS[@]}"; do
 done
 
 "$SCRIPT_DIR/vcpkg" export --raw --output "$EXPORTED_NAME" --output-dir "$SCRIPT_DIR" "${ALL_DEPS[@]}"
+
+if [[ "$OSTYPE" = darwin* ]]; then
+	# Check if we ended up depending on a versioned SDK directory which might cause trouble
+	# when using the env on a different machine (that uses a different SDK version)
+	problematic_files="$( find "$EXPORTED_NAME" -iname '*.cmake' -exec grep -ni 'MacOSX[[:digit:]]\+\(.[[:digit:]]\+\)\?.sdk' {} /dev/null \; | grep --invert-match '#' || true )"
+
+	if [[ -n "$problematic_files" ]]; then
+		1>&2 echo "[Warning]: The following files depend on an explicitly versioned MacOSX SDK path (consider manually changing that):"
+		1>&2 echo "$problematic_files"
+	fi
+fi

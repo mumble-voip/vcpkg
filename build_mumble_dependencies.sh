@@ -73,7 +73,7 @@ fi
 
 OVERLAY_TRIPLETS="$SCRIPT_DIR/mumble_triplets/"
 
-EXPORTED_NAME="mumble_env.$TRIPLET.$( date +"%Y-%m-%d" ).$( git -C "$SCRIPT_DIR" rev-parse --short --verify HEAD )"
+EXPORTED_NAME="mumble_env.$TRIPLET.$( git -C "$SCRIPT_DIR" rev-parse --short --verify HEAD )"
 ALL_DEPS=()
 
 if [[ $OSTYPE == msys ]]; then

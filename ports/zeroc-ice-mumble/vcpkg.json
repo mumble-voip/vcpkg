@@ -1,6 +1,6 @@
 {
   "name": "zeroc-ice-mumble",
-  "version-string": "3.7.3",
+  "version-string": "3.7.10",
   "description": "Comprehensive RPC framework with support for C++, CSharp, Java, JavaScript, Python and more.",
   "homepage": "https://github.com/zeroc-ice/ice",
   "dependencies": [
@@ -24,7 +24,11 @@
     {
       "name": "zlib",
       "platform": "!uwp"
-    }
+    },
+	{
+		"name": "libedit",
+		"platform": "!windows"
+	}
   ],
   "features": {
     "cpp11": {

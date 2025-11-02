@@ -15,6 +15,7 @@ boost-optional
 boost-preprocessor
 boost-system
 boost-variant
+cli11
 libflac
 libmysql
 libogg

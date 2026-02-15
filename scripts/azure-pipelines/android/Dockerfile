@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.4
 # DisableDockerDetector "Used to build the container deployed to Azure Container Registry"
-FROM ubuntu:noble-20251001
+FROM ubuntu:noble-20251013
 
 ADD https://packages.microsoft.com/config/ubuntu/24.04/packages-microsoft-prod.deb /packages-microsoft-prod.deb
 ADD https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.14+7/OpenJDK17U-jdk_x64_linux_hotspot_17.0.14_7.tar.gz /OpenJDK17U-jdk_x64_linux_hotspot_17.0.14_7.tar.gz
@@ -99,10 +99,10 @@ rm -f android-ndk-r28c-linux.zip
 
 END_OF_SCRIPT
 
-ENV JAVA_HOME /jdk-17.0.14+7
+ENV JAVA_HOME="/jdk-17.0.14+7"
 
-ENV ANDROID_HOME /android-sdk
+ENV ANDROID_HOME="/android-sdk"
 
-ENV ANDROID_NDK_HOME /android-ndk-r28c
+ENV ANDROID_NDK_HOME="/android-ndk-r28c"
 
 WORKDIR /vcpkg

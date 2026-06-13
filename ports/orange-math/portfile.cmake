@@ -6,7 +6,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO orange-cpp/omath
     REF "v${VERSION}"
-    SHA512 fdcd4394ff132bc690a2be6ba275da36d037bf3edbe3d6cdeabbbb4a42ee9657f876af9b8e99a9c77bb44a6dce64f0906f9d28bde04c8b608fb2d44dd6ca8134
+    SHA512 66e70948ff72353ef260a33952b44b4d623441f6ff416bc410984789a897c180b91857d7e00ed6b9eeff531a3cd4adc1c1263a31f5945830355260e14d9775bb
     HEAD_REF master
 )
 
@@ -17,6 +17,8 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
         "avx2"      OMATH_USE_AVX2
         "imgui"     OMATH_IMGUI_INTEGRATION
         "inline"    OMATH_ENABLE_FORCE_INLINE
+        "hooking"   OMATH_ENABLE_HOOKING
+        "lua"       OMATH_ENABLE_LUA
 )
 
 vcpkg_cmake_configure(

@@ -33,6 +33,7 @@ qttranslations
 soci[mysql,postgresql,sqlite3]
 speexdsp
 spdlog
+spscqueue
 sqlite3
 zeroc-ice-mumble
 zlib

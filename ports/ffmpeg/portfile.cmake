@@ -2,7 +2,7 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO ffmpeg/ffmpeg
     REF "n${VERSION}"
-    SHA512 e858e92e5eb08d562302cde371af55917df6e1fe53994e18462a3c929a40ede1828c2bd53c2a7d65a2cfd791782ead3cd94efb2def904f49cb5dd8ab5cd4256f
+    SHA512 c72f4062aecc16d8b2b1e8678d5efe3af4cfaa0cc7c0997052248f9e499e60c2463acf07877cf3b78b246ce3e8078cb043e8d97e90a6b50d06af32ff7369a788
     HEAD_REF master
     PATCHES
         0002-fix-msvc-link.patch
@@ -18,6 +18,7 @@ vcpkg_from_github(
         0047-fix-msvc-utf8.patch
         0048-backport-23039.patch
         0049-fix-twolame-pkgconfig.patch
+        0050-fix-test-ld-absolute-lib-paths.patch
 )
 
 if(SOURCE_PATH MATCHES " ")
@@ -634,6 +635,7 @@ endif()
 if(VCPKG_TARGET_IS_UWP)
     set(ENV{LIBPATH} "$ENV{LIBPATH};$ENV{_WKITS10}references\\windows.foundation.foundationcontract\\2.0.0.0\\;$ENV{_WKITS10}references\\windows.foundation.universalapicontract\\3.0.0.0\\")
     string(APPEND OPTIONS " --disable-programs")
+    string(APPEND OPTIONS " --disable-filter=gfxcapture")
     string(APPEND OPTIONS " --extra-cflags=-DWINAPI_FAMILY=WINAPI_FAMILY_APP --extra-cflags=-D_WIN32_WINNT=0x0A00")
     string(APPEND OPTIONS " --extra-ldflags=-APPCONTAINER --extra-ldflags=WindowsApp.lib --extra-ldflags=dxguid.lib")
 endif()

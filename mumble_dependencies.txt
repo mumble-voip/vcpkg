@@ -22,6 +22,7 @@ libogg
 libpq
 libsndfile
 libvorbis
+nlohmann_json
 opus
 poco[zip,xml]
 protobuf

@@ -31,10 +31,10 @@ qtbase[sql-sqlite]
 qtsvg
 qttools
 qttranslations
+readerwriterqueue
 soci[mysql,postgresql,sqlite3]
 speexdsp
 spdlog
-spscqueue
 sqlite3
 zeroc-ice-mumble
 zlib

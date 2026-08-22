@@ -22,6 +22,7 @@ libogg
 libpq
 libsndfile
 libvorbis
+nlohmann-json
 opus
 poco[zip,xml]
 protobuf
@@ -30,6 +31,7 @@ qtbase[sql-sqlite]
 qtsvg
 qttools
 qttranslations
+readerwriterqueue
 soci[mysql,postgresql,sqlite3]
 speexdsp
 spdlog

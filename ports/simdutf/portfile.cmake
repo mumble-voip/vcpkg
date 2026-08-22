@@ -2,13 +2,16 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO simdutf/simdutf
     REF "v${VERSION}"
-    SHA512 ee30ac7b7b96dfef2ced3938b1cc8e10cd5ec5b3d35ac9679f30fbb7811bf3f930a31f5b4cf0b4002f27eba84d2e27e7c7bd910d96aa04485588188ad910361d
+    SHA512 7423222bd29c731b4dab7078ea7361ab91663af028938c44b97c8bbfa4c9e1ee8298a95bbed455dc90686b8f7c3b53be6506f3ae13741e84faffbafa253d86a5
     HEAD_REF master
+    PATCHES
+        bindir.patch
 )
 
 vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
     FEATURES
     "tools" SIMDUTF_TOOLS
+    "tools" SIMDUTF_ICONV
 )
 
 vcpkg_cmake_configure(
@@ -27,4 +30,9 @@ if ("tools" IN_LIST FEATURES)
 endif()
 
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/include")
-vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE-APACHE")
+file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
+file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/tools")
+vcpkg_install_copyright(FILE_LIST
+    "${SOURCE_PATH}/LICENSE-APACHE"
+    "${SOURCE_PATH}/LICENSE-MIT"
+)

@@ -2,9 +2,10 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO HappySeaFox/sail
     REF "v${VERSION}"
-    SHA512 0e6bd4fb7910eda29e0cd6d96e31ff9a476d5836055e4653d6401ab72209eccd3624b8c1e92b7cd0d22ecdaa8ffde44b155da36da61c99ec0c06e1d388bd1d67
+    SHA512 34adaf10d8a4b69740acc6ac9db9564483cbe6e3226a2adec3692b0b8432aa086a5158bae1eafd1a621f1566f462eb1352bc323672f93eacb8d26ee2f03052d4
     HEAD_REF master
     PATCHES
+        fix-always-nanosvg.diff
         fix-heif.patch
         fix-include-directory.patch
 )
@@ -12,12 +13,12 @@ vcpkg_from_github(
 # Enable selected codecs
 set(ONLY_CODECS "")
 
-# List of codecs copy-pased from SAIL
+# List of codecs copy-pasted from SAIL
 set(HIGHEST_PRIORITY_CODECS gif jpeg png svg webp)
 set(HIGH_PRIORITY_CODECS    avif ico)
-set(MEDIUM_PRIORITY_CODECS  heif openexr psd tiff)
+set(MEDIUM_PRIORITY_CODECS  heif openexr psd raw tiff video)
 set(LOW_PRIORITY_CODECS     bmp hdr jpeg2000 jpegxl pnm qoi tga)
-set(LOWEST_PRIORITY_CODECS  jbig pcx wal xbm xpm xwd)
+set(LOWEST_PRIORITY_CODECS  fli jbig pcx wal xbm xpm xwd)
 
 foreach(CODEC ${HIGHEST_PRIORITY_CODECS} ${HIGH_PRIORITY_CODECS} ${MEDIUM_PRIORITY_CODECS} ${LOW_PRIORITY_CODECS} ${LOWEST_PRIORITY_CODECS})
     if (CODEC IN_LIST FEATURES)
@@ -32,6 +33,11 @@ if ("openmp" IN_LIST FEATURES)
     set(SAIL_ENABLE_OPENMP ON)
 endif()
 
+vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
+    FEATURES
+        test BUILD_TESTING
+)
+
 if (VCPKG_TARGET_IS_WINDOWS)
     vcpkg_check_linkage(ONLY_STATIC_LIBRARY)
 
@@ -45,7 +51,7 @@ endif()
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
     OPTIONS
-        -DBUILD_TESTING=OFF
+        ${FEATURE_OPTIONS}
         -DSAIL_COMBINE_CODECS=ON
         -DSAIL_ENABLE_OPENMP=${SAIL_ENABLE_OPENMP}
         -DSAIL_ONLY_CODECS=${ONLY_CODECS_ESCAPED}
@@ -55,6 +61,14 @@ vcpkg_cmake_configure(
 )
 
 vcpkg_cmake_install()
+
+if (BUILD_TESTING AND NOT VCPKG_CROSSCOMPILING)
+    vcpkg_cmake_build(
+        TARGET test
+        LOGFILE_BASE test
+        ADD_BIN_TO_PATH
+    )
+endif()
 
 vcpkg_copy_pdbs()
 

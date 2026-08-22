@@ -6,7 +6,7 @@ vcpkg_from_github(
   OUT_SOURCE_PATH SOURCE_PATH
   REPO Z3Prover/z3
   REF z3-${VERSION}
-  SHA512 e31df90b0edb3fd4a49a1069d78135d03c6b196c2bc8359a67273e02eba7214a7ff8654488f076ce7a0cf6edffdff9afc403799db3a6e5a1585a6d4c99c4df2a
+  SHA512 c6bed41313a643f2bcad6d6cfda241af948d81326bb41a5a18575170f51c1f4f75afc9e01022df9a6122e71fc54ef813ad2ac9745e40da68c892be68b4777baf
   HEAD_REF master
   PATCHES
       fix-install-path.patch

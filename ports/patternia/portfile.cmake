@@ -1,22 +1,28 @@
-set(VCPKG_BUILD_TYPE release) # Header-only library
+set(VCPKG_BUILD_TYPE release)
+
 vcpkg_from_github(
-    OUT_SOURCE_PATH SOURCE_PATH
-    REPO sentomk/patternia
-    REF "v${VERSION}"
-    SHA512 8203ae8974596538bbfeb74294d4f736e9a293c7d696b23808768a2e05fa5278eabfeb7e690b51aba2a1431a684ea2e0c948128f300035599de3001bfdfb2dd3
-    HEAD_REF main
+  OUT_SOURCE_PATH SOURCE_PATH
+  REPO sentomk/patternia
+  REF "v${VERSION}"
+  SHA512 4d65b63c456f9dca5798194f2771b3b3481ab30469aeddb1fdc28ff47ad2790b9f6d2c4b52261ea36352070c3f6f73e19f84c1c3e5724dbd845886201b650a61
+  HEAD_REF main
 )
 
-vcpkg_cmake_configure(SOURCE_PATH "${SOURCE_PATH}"
-    OPTIONS
-        -DPTN_INSTALL=ON
-        -DPTN_BUILD_TESTS=OFF
-        -DPTN_BUILD_BENCHMARKS=OFF
+vcpkg_cmake_configure(
+  SOURCE_PATH "${SOURCE_PATH}"
+  OPTIONS
+    -DPTN_BUILD_TESTS=OFF
+    -DPTN_BUILD_BENCHMARKS=OFF
+    -DPTN_BUILD_SAMPLES=OFF
+    -DPTN_DEV_INDEX=OFF
+    -DPTN_INSTALL=ON
 )
 
 vcpkg_cmake_install()
-vcpkg_cmake_config_fixup(CONFIG_PATH lib/cmake/${PORT})
 
+vcpkg_cmake_config_fixup(PACKAGE_NAME patternia CONFIG_PATH lib/cmake/patternia)
+
+file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug")
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/lib")
 
 vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE")

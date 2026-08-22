@@ -3,8 +3,8 @@ set(VCPKG_BUILD_TYPE release) # header-only
 vcpkg_from_github(OUT_SOURCE_PATH SOURCE_PATH
     REPO GreycLab/CImg
     # Using commit id becuase upstream likes to change tags
-    REF a5fb0fd2efff9af9c7482a2c064f82b8da7c3ceb
-    SHA512 c15ccab40400c8b00e8899a08c67cc5f867db1fd01222e420cb2a7f8b3f5cd625573900d8c192e22156e11930953c6e6676d83a97734cd4f1bd46fea47d7d735
+    REF ed8d53c7f2469c8b8e23c11cb880f42f6cb74ab9
+    SHA512 10a44ad2d8a1a93bcd38501be9cfad3840675653abfefb2c539c098653179e77cdd34aa323ae28958522dfaddee376c5cf04d6871cc600398738b98a272f320c
     HEAD_REF master
 )
 
@@ -17,7 +17,9 @@ vcpkg_cmake_configure(
 vcpkg_cmake_install()
 
 vcpkg_install_copyright(
+    COMMENT "plugins/matlab.h does not specify an LGPL version; the manifest represents this notice as LicenseRef-LGPL."
     FILE_LIST
         "${SOURCE_PATH}/Licence_CeCILL-C_V1-en.txt"
         "${SOURCE_PATH}/Licence_CeCILL_V2-en.txt"
+        "${SOURCE_PATH}/plugins/matlab.h"
 )

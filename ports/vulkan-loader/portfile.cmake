@@ -4,10 +4,11 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO KhronosGroup/Vulkan-Loader
     REF "vulkan-sdk-${VERSION}"
-    SHA512 91d9883e05eaeec8d800b8eb7f5e457c62554ded3b470bc1b0cdb979863819f01c0c02b2ba7c1dd3031a05c90152960a680b237d3570826a8615b25aa57bd061
+    SHA512 3376ce1be08ec4f453d6674118cc5e59d07ba7c7ec135f3cdd4d6820fa26bf4ef5e176ac9ade4413d25d90b4828060a1d0e0c1c2a7b4bec3118d70cdd61e6bfa
     HEAD_REF main
     PATCHES
         link-directfb.patch
+        fix-marmasm-conditional-assembly.patch
 )
 
 vcpkg_find_acquire_program(PYTHON3)

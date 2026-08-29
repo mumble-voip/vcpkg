@@ -36,5 +36,6 @@ soci[mysql,postgresql,sqlite3]
 speexdsp
 spdlog
 sqlite3
+utfcpp
 zeroc-ice-mumble
 zlib

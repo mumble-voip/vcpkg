@@ -6,7 +6,7 @@ vcpkg_from_gitlab(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO tesch1/cppduals
     REF "v${VERSION}"
-    SHA512 70e47ee403cd1faaf5893fdab18ea94ce90cd4e8f31d8efa3b907ceafee859f852ff33d8d92feae077c496a56fe34a505e847f86042bdc34de1c53bb417b5a50
+    SHA512 2202382b1f85f6f5f5918d0b747023b538fc7e14ba9074426d5d59e45f2867f3abbb7a266def1896be2ab518b241dedd445ddf774bf528ece80060ec58a9e6fe
     HEAD_REF master
 )
 

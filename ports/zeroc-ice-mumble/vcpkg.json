@@ -3,6 +3,7 @@
   "version-string": "3.7.10",
   "description": "Comprehensive RPC framework with support for C++, CSharp, Java, JavaScript, Python and more.",
   "homepage": "https://github.com/zeroc-ice/ice",
+  "license": "BSD-3-Clause",
   "dependencies": [
     {
       "name": "bzip2",
@@ -11,6 +12,10 @@
     {
       "name": "expat",
       "platform": "!uwp"
+    },
+    {
+      "name": "libedit",
+      "platform": "!windows"
     },
     {
       "name": "lmdb",
@@ -22,13 +27,17 @@
       "platform": "!uwp"
     },
     {
+      "name": "vcpkg-cmake",
+      "host": true
+    },
+    {
+      "name": "vcpkg-cmake-config",
+      "host": true
+    },
+    {
       "name": "zlib",
       "platform": "!uwp"
-    },
-	{
-		"name": "libedit",
-		"platform": "!windows"
-	}
+    }
   ],
   "features": {
     "cpp11": {

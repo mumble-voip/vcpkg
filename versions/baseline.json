@@ -11352,6 +11352,10 @@
       "baseline": "3.7.10",
       "port-version": 0
     },
+    "zeroc-ice-mumble": {
+      "baseline": "3.7.10",
+      "port-version": 0
+    },
     "zeromq": {
       "baseline": "4.3.5",
       "port-version": 3

@@ -11,29 +11,27 @@ vcpkg_from_github(
 )
 
 if("cpp11" IN_LIST FEATURES)
-	vcpkg_configure_cmake(
+	vcpkg_cmake_configure(
 		SOURCE_PATH ${SOURCE_PATH}
-		PREFER_NINJA
 		OPTIONS
 			-DBUILD_ICE_CXX=ON
 			-DBUILD_ICE_CPP11=ON
 	)
 else()
-	vcpkg_configure_cmake(
+	vcpkg_cmake_configure(
 		SOURCE_PATH ${SOURCE_PATH}
-		PREFER_NINJA
 		OPTIONS
 			-DBUILD_ICE_CXX=ON
 	)
 endif()
 
-vcpkg_install_cmake()
+vcpkg_cmake_install()
 
 vcpkg_copy_pdbs()
 
 file(INSTALL ${SOURCE_PATH}/cpp/include DESTINATION ${CURRENT_PACKAGES_DIR})
 file(INSTALL ${SOURCE_PATH}/slice DESTINATION ${CURRENT_PACKAGES_DIR})
-file(INSTALL ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel/include 
+file(INSTALL ${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-rel/include
 	DESTINATION ${CURRENT_PACKAGES_DIR}
 )
 
@@ -55,6 +53,6 @@ endif()
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/bin ${CURRENT_PACKAGES_DIR}/debug/bin)
 
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
-  
+
 file(INSTALL ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT} RENAME copyright)
 file(INSTALL ${SOURCE_PATH}/ICE_LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/${PORT})

@@ -1,0 +1,17 @@
+{
+  "name": "ipxx",
+  "version": "1.0.0",
+  "description": "IP address, endpoint and subnet header-only C++20 library",
+  "homepage": "https://github.com/davidebeatrici/ipxx",
+  "license": "MIT",
+  "dependencies": [
+    {
+      "name": "vcpkg-cmake",
+      "host": true
+    },
+    {
+      "name": "vcpkg-cmake-config",
+      "host": true
+    }
+  ]
+}

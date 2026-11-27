@@ -16,6 +16,7 @@ boost-preprocessor
 boost-system
 boost-variant
 cli11
+ipxx
 libflac
 libmysql
 libogg
